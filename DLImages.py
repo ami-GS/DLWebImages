@@ -1,35 +1,59 @@
-from bs4 import BeautifulSoup
-import urllib2, urllib
-import sys, os
+def rmQ(fname):
+    return fname.split("?")[0]
 
+def getImgURL(src, url):
+    if "http" not in src:
+        return url+src
+    else:
+        return src
 
-def main(url):
+def mkdir(dirName):
+    import os
+    try:
+        os.mkdir(dirName)
+        print "mkdir"
+    except Exception as e:
+        print e
+#        pass # if dirName already exist
+
+def DLImages(AllImages, url, dirName):
+    import urllib
+
+    successNum = 0
+    for img in AllImages:
+        src = img.get("src")
+        imgURL = getImgURL(src, url)
+        fname = src.split("/")[-1]
+
+        if "?" in fname:
+            fname = rmQ(fname)
+        try:
+            urllib.urlretrieve(imgURL, dirName+"/"+fname)
+            print "[ Success ] " + imgURL
+            successNum += 1
+        except Exception as e:
+            print e
+            print "[ Failed ] " + imgURL        
+
+    return successNum
+
+def main(url, dirName="./DLImages"):
+    from bs4 import BeautifulSoup
+    import urllib2
+    
+    mkdir(dirName)
     response = urllib2.urlopen(url)
     html = response.read()
     soup = BeautifulSoup(html)
-    
-    os.mkdir("./"+url.split("/")[2])
     AllImages = soup.find_all("img")
     imgNum = len(AllImages)
-    for img in AllImages:
-        src = img.get("src")
-        DLFile = src
-        if "http" not in DLFile:
-            DLFile = url+DLFile
+    successNum = DLImages(AllImages, url, dirName)
 
-        fname = src.split("/")[-1]
-        if "?" in fname:
-            fname = fname.split("?")[0]
-
-        successnum = 0
-        try:
-            urllib.urlretrieve(DLFile, url.split("/")[2]+"/"+fname)
-            print DLFile
-            successnum += 1
-        except:
-            print DLFile+" [ Failed ]"
-
-    print successnum, "images could be downloaded (in", imgNum, "images)."
+    print successNum, "images could be downloaded (in", imgNum, "images)."
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    import sys
+    if len(sys.argv) == 2:
+        main(sys.argv[1])
+    elif len(sys.argv) == 3:
+        main(sys.argv[1], sys.argv[2])
