@@ -11,7 +11,6 @@ def mkdir(dirName):
     import os
     try:
         os.mkdir(dirName)
-        print "mkdir"
     except Exception as e:
         print e
 #        pass # if dirName already exist
