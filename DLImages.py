@@ -1,3 +1,5 @@
+import os
+
 def rmQ(fname):
     return fname.split("?")[0]
 
@@ -8,7 +10,6 @@ def getImgURL(src, url):
         return src
 
 def mkdir(dirName):
-    import os
     try:
         os.mkdir(dirName)
     except Exception as e:
@@ -17,6 +18,7 @@ def mkdir(dirName):
 
 def DLImages(AllImages, url, dirName):
     import urllib
+
 
     successNum = 0
     for img in AllImages:
@@ -27,8 +29,10 @@ def DLImages(AllImages, url, dirName):
         if "?" in fname:
             fname = rmQ(fname)
         try:
+            if fname in os.listdir(dirName):
+                fname = fname + str(successNum)
             urllib.urlretrieve(imgURL, dirName+"/"+fname)
-            print "[ Success ] " + imgURL
+            print "[ Success ] " + imgURL, fname
             successNum += 1
         except Exception as e:
             print e
