@@ -19,7 +19,6 @@ def mkdir(dirName):
 def DLImages(AllImages, url, dirName):
     import urllib
 
-
     successNum = 0
     for img in AllImages:
         src = img.get("src")
@@ -60,3 +59,5 @@ if __name__ == "__main__":
         main(sys.argv[1])
     elif len(sys.argv) == 3:
         main(sys.argv[1], sys.argv[2])
+    else:
+        print "Usage: python DLImage.py URL [directory]"
