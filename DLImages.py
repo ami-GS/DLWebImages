@@ -1,13 +1,21 @@
 import os
 
+
+SUPPORT_IMAGES = (".jpg",".jpeg",".png",".gif",".tiff",".eps",)
+
 def rmQ(fname):
     return fname.split("?")[0]
 
 def getImgURL(src, url):
-    if "http" not in src:
-        return url+src
+#    print src
+#    print [src.endswith(support) for support in SUPPORT_IMAGES]
+    if True in [src.endswith(support) for support in SUPPORT_IMAGES]:
+        if "http" not in src:
+            return url+src
+        else:
+            return src
     else:
-        return src
+        return 0
 
 def mkdir(dirName):
     try:
@@ -23,10 +31,15 @@ def DLImages(AllImages, url, dirName):
     for img in AllImages:
         src = img.get("src")
         imgURL = getImgURL(src, url)
+
+        if not imgURL:
+            continue
+
         fname = src.split("/")[-1]
 
         if "?" in fname:
             fname = rmQ(fname)
+        
         try:
             if fname in os.listdir(dirName):
                 fname = fname + str(successNum)
