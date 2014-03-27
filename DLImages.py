@@ -21,7 +21,8 @@ def mkdir(dirName):
     try:
         os.mkdir(dirName)
     except Exception as e:
-        print e
+        if dirName != "./DLImages":
+            print e
 #        pass # if dirName already exist
 
 def DLImages(AllImages, url, dirName):
